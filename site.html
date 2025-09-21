@@ -6,6 +6,10 @@
 </head>
 <body>
     <h1>Магазин товаров для творчества</h1>
+    <h1 id="cartCounter" class="cart-counter">0</h1>
+    <button onclick="clearCart()" style="margin: 20px; padding: 10px;">
+    Очистить корзину
+        </button>
 
     <div class="products">
         <div class="product">
@@ -66,15 +70,37 @@
     </div>
 
     <script>
-        //функция для кнопок - появляется сообщение о добавке товара в корзину
-    var buttons = document.querySelectorAll('button'); // 1
+        //увеличивается счетчик корзины и появляется сообщение о добавке товара в корзину
 
-    for (var i = 0; i < buttons.length; i++) { // 2
-        buttons[i].addEventListener('click', function() { // 3
-            var productName = this.parentElement.querySelector('h3').textContent; // 4
-            alert('Товар "' + productName + '" добавлен в корзину!'); // 5
-        });
-    }
+        // переменная для хранения количества товаров
+        var cartCount = parseInt(localStorage.getItem('cartCount')) || 0;
+        var cartCounter = document.getElementById('cartCounter');
+
+        //отображаем актуальное значение счетчика
+        cartCounter.textContent = cartCount;
+
+        //ищем все кнопки на странице
+        var buttons = document.querySelectorAll('button');
+
+        //цикл for проходит по каждой кнопке
+        for (var i = 0; i < buttons.length; i++) {
+            //к выбранной кнопке добавили обработчик событий (ивентлисенер)
+            //когда кликнут кнопку выполнится функция
+            buttons[i].addEventListener('click', function() {
+
+                // счетчик увеличиваем на 1
+                cartCount++;
+
+                // обновляем отображение счетчика
+                cartCounter.textContent = cartCount;
+
+                //в переменную продактнейм сохраняем название кликнутого товара
+                var productName = this.parentElement.querySelector('h3').textContent;
+                //выводим всплывашку с сохр названием товара
+                alert('Товар "' + productName + '" добавлен в корзину!');
+            });
+        }
+
     </script>
 </body>
 </html>
