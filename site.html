@@ -6,7 +6,12 @@
 </head>
 <body>
     <h1>Магазин товаров для творчества</h1>
-    <h1 id="cartCounter" class="cart-counter">0</h1>
+    <div class="cart-info">
+        Товаров: <span id="cartCount">0</span> |
+        Сумма: <span id="cartTotal">0</span> руб.
+    </div>
+
+    //пока неактивна!!
     <button onclick="clearCart()" style="margin: 20px; padding: 10px;">
     Очистить корзину
         </button>
@@ -17,7 +22,7 @@
             <img src="https://avatars.mds.yandex.net/get-mpic/4055688/img_id6090440788955677915.jpeg/orig"
                  width="200" height="200" alt="Акварельные краски">
             <p>Цена: 1200 руб.</p>
-            <button>Добавить в корзину</button>
+            <button data-price="1200">Добавить в корзину</button>
         </div>
 
         <div class="product">
@@ -25,7 +30,7 @@
             <img src="https://art-market.pro/images/products/62/a9/product_img_1271.jpg"
                  width="200" height="200" alt="Кисти">
             <p>Цена: 850 руб.</p>
-            <button>Добавить в корзину</button>
+            <button data-price="850">Добавить в корзину</button>
         </div>
 
         <div class="product">
@@ -33,7 +38,7 @@
             <img src="https://ir.ozone.ru/s3/multimedia-8/c1000/6238774688.jpg"
                  width="200" height="200" alt="Холст">
             <p>Цена: 650 руб.</p>
-            <button>Добавить в корзину</button>
+            <button data-price="650">Добавить в корзину</button>
         </div>
 
         <div class="product">
@@ -41,7 +46,7 @@
             <img src="https://avatars.mds.yandex.net/i?id=0c82ac2237f45449466e674e2b2c21bb_l-12595049-images-thumbs&n=13"
                  width="200" height="200" alt="Краски масляные">
             <p>Цена: 1800 руб.</p>
-            <button>Добавить в корзину</button>
+            <button data-price="1800">Добавить в корзину</button>
         </div>
 
         <div class="product">
@@ -49,7 +54,7 @@
             <img src="https://krasniykarandash.ru/upload/iblock/ae2/ae2ffd2db47330d69dbadbec819b3af1.jpg"
                  width="200" height="200" alt="Палитра">
             <p>Цена: 350 руб.</p>
-            <button>Добавить в корзину</button>
+            <button data-price="350">Добавить в корзину</button>
         </div>
 
         <div class="product">
@@ -57,7 +62,7 @@
             <img src="https://avatars.mds.yandex.net/i?id=062d26b94e526544bec743c6fff0a372_l-5337489-images-thumbs&n=13"
                  width="200" height="200" alt="Мольберт">
             <p>Цена: 2500 руб.</p>
-            <button>Добавить в корзину</button>
+            <button data-price="2500">Добавить в корзину</button>
         </div>
 
         <div class="product">
@@ -65,7 +70,7 @@
             <img src="https://krasniykarandash.ru/upload/resize_cache/iblock/169/758_758_1/169fbbb43339f7da8d7050066099dd15.jpg"
                  width="200" height="200" alt="Пластилин">
             <p>Цена: 500 руб.</p>
-            <button>Добавить в корзину</button>
+            <button data-price="500">Добавить в корзину</button>
         </div>
     </div>
 
@@ -73,11 +78,16 @@
         //увеличивается счетчик корзины и появляется сообщение о добавке товара в корзину
 
         // переменная для хранения количества товаров
-        var cartCount = parseInt(localStorage.getItem('cartCount')) || 0;
-        var cartCounter = document.getElementById('cartCounter');
+        var cartData = JSON.parse(localStorage.getItem('cartData')) || {
+            count: 0,
+            total: 0
+        };
+        var cartCountDisplay = document.getElementById('cartCount');
+        var cartTotalDisplay = document.getElementById('cartTotal');
 
         //отображаем актуальное значение счетчика
-        cartCounter.textContent = cartCount;
+        cartCountDisplay.textContent = cartData.count;
+        cartTotalDisplay.textContent = cartData.total;
 
         //ищем все кнопки на странице
         var buttons = document.querySelectorAll('button');
@@ -88,11 +98,19 @@
             //когда кликнут кнопку выполнится функция
             buttons[i].addEventListener('click', function() {
 
-                // счетчик увеличиваем на 1
-                cartCount++;
+                //находим цену товара
+                var price = parseInt(this.getAttribute('data-price'));
+
+                // счетчик увеличиваем
+                cartData.count++;
+                cartData.total += price;
+
+                //сохраняем счетчики в локалсторедж
+                localStorage.setItem('cartData', JSON.stringify(cartData));
 
                 // обновляем отображение счетчика
-                cartCounter.textContent = cartCount;
+                cartCountDisplay.textContent = cartData.count;
+                cartTotalDisplay.textContent = cartData.total;
 
                 //в переменную продактнейм сохраняем название кликнутого товара
                 var productName = this.parentElement.querySelector('h3').textContent;
